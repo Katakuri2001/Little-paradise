@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Paradise - Immersive Player</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --bg: #090B12;
+    --bg2: #111522;
+    --glass: rgba(255,255,255,0.065);
+    --border: rgba(255,255,255,0.13);
+    --accent: #A78BFA;
+    --accent2: #8BC5FF;
+    --highlight: #C4B5FD;
+    --text: #F8FAFC;
+    --muted: #9299AB;
+    --lp-glass-bg-subtle: rgba(255,255,255,0.04);
+    --lp-glass-bg-raised: rgba(255,255,255,0.09);
+    --lp-glass-bg-overlay: rgba(255,255,255,0.12);
+    --lp-glass-border-subtle: rgba(255,255,255,0.08);
+    --lp-glass-border-raised: rgba(255,255,255,0.16);
+    --lp-glass-border-overlay: rgba(255,255,255,0.22);
+    --lp-blur-sm: 12px;
+    --lp-blur-md: 28px;
+    --lp-blur-lg: 40px;
+    --lp-radius-md: 12px;
+    --lp-radius-lg: 20px;
+    --lp-radius-xl: 28px;
+    --lp-shadow-glass: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.18);
+    --lp-shadow-raised: inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 60px rgba(0,0,0,0.25);
+    --lp-focus-ring: 0 0 0 2px #A78BFA, 0 0 0 4px rgba(167,139,250,0.35);
+    --lp-btn-primary: #6A4AF0;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Glass surfaces */
+  .glass {
+    background: rgba(255,255,255,0.065);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.18);
+  }
+
+  .glass-subtle {
+    background: var(--lp-glass-bg-subtle);
+    backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid var(--lp-glass-border-subtle);
+    box-shadow: var(--lp-shadow-glass);
+    border-radius: var(--lp-radius-md);
+  }
+
+  .glass-raised {
+    background: var(--lp-glass-bg-raised);
+    backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid var(--lp-glass-border-raised);
+    box-shadow: var(--lp-shadow-raised);
+    border-radius: var(--lp-radius-lg);
+  }
+
+  .glass-overlay {
+    background: var(--lp-glass-bg-overlay);
+    backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--lp-glass-border-overlay);
+    box-shadow: var(--lp-shadow-raised);
+    border-radius: var(--lp-radius-xl);
+  }
+
+  /* Layout */
+  .player-container {
+    min-h: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem sm:1.5rem lg:p-8;
+  }
+
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom-right, #090B12, #090B12);
+  }
+
+  .hero-glow {
+    position: absolute;
+    inset: 0;
+    opacity: 40%;
+    background: radial-gradient(circle at 70% 30%, rgba(167,139,250,0.3), transparent 50%);
+  }
+
+  /* Player bar */
+  .player-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    height: 72px;
+    background: glass;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    padding: 3px sm:4px;
+    flex items-center gap-3;
+  }
+
+  .player-bar-left {
+    flex items-center gap-3 min-w-0 w-1/3;
+  }
+
+  .track-artwork {
+    relative shrink-0 w-44 h-44 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-lg overflow-hidden;
+  }
+
+  .track-info {
+    flex-1 min-w-0;
+  }
+
+  .track-title {
+    text-sm font-medium truncate;
+  }
+
+  .track-artist {
+    text-xs text-muted truncate;
+  }
+
+  .player-center {
+    flex-1 flex flex-col items-center gap-1;
+  }
+
+  .control-row {
+    flex items-center gap-1 sm:gap-2;
+  }
+
+  .right-section {
+    flex items-center gap-1 sm:gap-2 w-1/3 justify-end;
+  }
+
+  .volume-slider {
+    w-16 h-1 accent-violet-400 cursor-pointer;
+  }
+
+  /* Seek bar */
+  .seek-bar {
+    flex-1 h-1 accent-violet-400 cursor-pointer;
+  }
+
+  .time-display {
+    text-[10px] text-muted tabular-nums w-8;
+  }
+
+  /* Repeat button */
+  .repeat-btn {
+    p-1.5 rounded-lg text-muted hover:text-white aria-pressed transition-transform duration-150 ease-out-custom active:scale-95;
+  }
+
+  /* Play button */
+  .play-btn {
+    w-9 h-9 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition;
+  }
+
+  /* Queue button */
+  .queue-btn {
+    p-1.5 text-muted hover:text-white aria-label="Open queue";
+  }
+
+  /* Fullscreen button */
+  .fullscreen-btn {
+    p-1.5 text-muted hover:text-white hidden sm:block transition-transform duration-150 ease-out-custom;
+  }
+
+  /* Volume slider */
+  .volume-slider {
+    w-16 h-1 accent-violet-400 cursor-pointer;
+  }
+
+  /* Animations */
+  .animate-spin {
+    animation: spin 8s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite;
+    border-radius: 12px;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .skeleton {
+    animation: shimmer 1.6s infinite;
+  }
+</style>
+</head>
+<body class="min-h-screen relative overflow-hidden">
+  <!-- Dynamic background gradient -->
+  <div class="hero-gradient bg-gradient-to-br from-violet-950 via-[#090B12] to-sky-900"></div>
+  
+  <!-- Dynamic glow background -->
+  <div class="hero-glow absolute inset-0 opacity-40 style="background: radial-gradient(circle at 70% 30%, rgba(167,139,250,0.3), transparent 50%)">
+  
+  <!-- Main player interface -->
+  <div class="relative z-10 p-4 sm:p-8 flex flex-col min-h-screen">
+    
+    <!-- Header with navigation -->
+    <div class="flex items-center justify-between mb-4">
+      <Link href="/" class="p-2 glass rounded-full hover:bg-white/10">
+        <ArrowLeft size={20} />
+      </Link>
+      <button class="px-4 py-2 rounded-full text-sm glass hover:bg-white/10 transition-transform duration-150 ease-out-custom active:scale-95" onclick="toggleMode()">
+        {mode === 'artwork' ? 'Show Lyrics' : 'Show Artwork'}
+      </button>
+    </div>
+
+    <div class="flex-1 grid lg:grid-cols-2 gap-8 items-center">
+      <div class="flex flex-col items-center justify-center">
+        {mode === 'artwork' ? (
+          <>
+            <div class="relative group cursor-pointer" onPointerMove={handlePointerMove} style={{ transform: `rotateX(${tilt.y}deg) rotateY(${-tilt.x}deg)`, transition: 'transform 0.3s ease' }}>
+              <motion.div animate={isPlaying ? { rotate: 360 } : {}} transition={{ duration: 12, repeat: Infinity, ease: 'linear' }} className="relative z-10">
+                <Artwork seed={currentTrack.artworkSeed} size={260} />
+                <AudioVisualizer analyser={analyserRef.current} enabled className="absolute inset-0 z-0 opacity-20 pointer-events-none" />
+              </motion.div>
+            </div>
+            <div className="mt-6 text-center">
+              <div className="font-display text-2xl sm:text-3xl font-bold">{currentTrack.title}</div>
+              <div className="text-muted mt-1">{currentTrack.artist}</div>
+              <div className="text-xs text-muted mt-1">{currentTrack.album}</div>
+            </div>
+          </>
+        ) : (
+          <div class="w-full h-[60vh] glass rounded-3xl overflow-hidden">
+            <LyricsView />
+          </div>
+        )}
+      </div>
+
+      <div class="flex flex-col gap-6">
+        {mode === 'artwork' && (
+          <div class="glass rounded-3xl p-6 h-[40vh] overflow-hidden">
+            <LyricsView compact />
+          </div>
+        )}
+        <div class="glass rounded-3xl p-6 space-y-4">
+          <input type="range" min={0} max={duration || 0} step={0.1} value={currentTime}
+            onChange={onSeek} className="w-full h-1 accent-violet-400 cursor-pointer" />
+          <div class="flex justify-between text-xs text-muted tabular-nums">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+          <div class="flex items-center justify-center gap-4">
+            <button onClick={() => setShuffle(!shuffle)} class={`p-2 ${shuffle ? "text-accent" : "text-muted"}`}>
+              <Shuffle size={20} />
+            </button>
+            <button onClick={prev} className="p-2 text-muted hover:text-white">
+              <SkipBack size={24} />
+            </button>
+            <button onClick={togglePlay} className="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition">
+              {isPlaying ? <Pause size={22} /> : <Play size={22} className="ml-1" />}
+            </button>
+            <button onClick={next} className="p-2 text-muted hover:text-white">
+              <SkipForward size={24} />
+            </button>
+            <button onClick={cycleRepeat} class={`p-2 ${repeatMode !== "off" ? "text-accent" : "text-muted"}`}>
+              {repeatMode === "one" ? <Repeat1 size={20} /> : <Repeat size={20} />}
+            </button>
+          </div>
+          <div class="flex items-center justify-between">
+            <button onClick={() => toggleFavorite(currentTrack.id)} class={`p-2 ${isFav ? "text-accent" : "text-muted"}`}>
+              <Heart size={18} className={isFav ? "fill-accent" : ""} />
+            </button>
+            <div class="flex items-center gap-2">
+              <button onClick={() => setMuted(!muted)} className="p-2 text-muted">
+                <Volume2 size={18} />
+              </button>
+              <input type="range" min={0} max={1} step={0.01} value={muted ? 0 : volume}
+                onChange={(e) => setVolume(Number(e.target.value))} className="w-24 h-1 accent-violet-400 cursor-pointer" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // State management
+    const currentTrack = {
+      id: "t1",
+      title: "Welcome to Paradise",
+      artist: "Aurora Vale",
+      album: "Midnight Paradise",
+      duration: 372.7,
+      artworkSeed: 1,
+      genre: "Dream Pop",
+      trackNumber: 1,
+      artistId: "a1",
+      albumId: "al1"
+    };
+    
+    let currentTime = 0;
+    let duration = 372.7;
+    let isPlaying = false;
+    let volume = 0.8;
+    let muted = false;
+    let shuffle = false;
+    let repeatMode = "off";
+    let currentTimeSec = 0;
+    
+    // Elements
+    const currentTrackEl = document.getElementById('current-track');
+    const currentArtistEl = document.getElementById('current-artist');
+    const currentAlbumEl = document.getElementById('current-album');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+    const seekBar = document.getElementById('seek-bar');
+    const playBtn = document.getElementById('play-btn');
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const repeatBtn = document.getElementById('repeat-btn');
+    const volumeSlider = document.getElementById('volume-slider');
+    
+    // Initialize
+    currentTrackEl.textContent = currentTrack.title;
+    currentArtistEl.textContent = currentTrack.artist;
+    currentAlbumEl.textContent = currentTrack.album;
+    durationEl.textContent = formatTime(currentTrack.duration);
+    
+    // Format time
+    function formatTime(sec) {
+      if (!isFinite(sec) || sec < 0) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return \`\${m}:\${s.toString().padStart(2, '0')}\`;
+    }
+    
+    // Update time display
+    function updateTimeDisplay() {
+      currentTimeEl.textContent = formatTime(currentTime);
+      seekBar.value = currentTime;
+      seekBar.max = duration;
+    }
+    
+    // Play/Pause
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      playBtn.innerHTML = isPlaying ? '<pause-icon>' : '<play-icon>';
+      if (isPlaying) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    }
+    
+    // Next/Prev
+    function nextTrack() {
+      currentTime = 0;
+      // In a real app, this would load the next track
+    }
+    
+    function prevTrack() {
+      if (currentTime > 3) {
+        currentTime = 0;
+      } else {
+        currentTime = 0;
+      }
+    }
+    
+    // Repeat mode
+    function cycleRepeat() {
+      const modes = ['off', 'all', 'one'];
+      const currentIdx = modes.indexOf(repeatMode);
+      repeatMode = modes[(currentIdx + 1) % modes.length];
+      updateRepeatButton();
+    }
+    
+    function updateRepeatButton() {
+      const icons = {
+        'off': 'repeat',
+        'all': 'repeat',  
+        'one': 'repeat_one'
+      };
+      repeatBtn.innerHTML = \`<span class="material-symbols-outlined text-\${repeatMode !== 'off' ? 'accent' : 'text-muted'}"\u003e\${icons[repeatMode]}\u003c/span\u003e`;
+    }
+    
+    // Volume
+    function setVolume(val) {
+      volume = val;
+      volumeSlider.value = volume;
+      audio.volume = volume;
+    }
+    
+    // Mute
+    function toggleMute() {
+      muted = !muted;
+      audio.muted = muted;
+    }
+    
+    // Seek
+    function onSeek(e) {
+      const t = Number(e.target.value);
+      currentTime = t;
+      audio.currentTime = t;
+      currentTimeEl.textContent = formatTime(currentTime);
+    }
+    
+    // Format time helper
+    function formatTime(sec) {
+      if (!isFinite(sec) || sec < 0) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return \`\${m}:\${s.toString().padStart(2, '0')}\`;
+    }
+    
+    // Initialize audio
+    const audio = new Audio();
+    audio.preload = "metadata";
+    audio.src = currentTrack.audioUrl;
+    audio.load();
+    
+    // Event listeners
+    audio.addEventListener('timeupdate', () => {
+      currentTime = audio.currentTime;
+      updateTimeDisplay();
+    });
+    
+    audio.addEventListener('loadedmetadata', () => {
+      duration = audio.duration || 0;
+      durationEl.textContent = formatTime(duration);
+      seekBar.max = duration;
+    });
+    
+    audio.addEventListener('canplay', () => {
+      setLoading(false);
+    });
+    
+    audio.addEventListener('ended', () => {
+      if (repeatMode === 'one') {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+        return;
+      }
+      nextTrack();
+    });
+    
+    audio.addEventListener('error', () => {
+      setError("Audio failed to load.");
+      setLoading(false);
+      nextTrack();
+    });
+    
+    audio.addEventListener('waiting', () => setLoading(true));
+    audio.addEventListener('playing', () => setLoading(false));
+    
+    // Initialize
+    setLoading(false);
+  </script>
+</body>
+</html>

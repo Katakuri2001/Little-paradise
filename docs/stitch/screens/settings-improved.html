@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Paradise - Settings</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --bg: #090B12;
+    --bg2: #111522;
+    --glass: rgba(255,255,255,0.065);
+    --border: rgba(255,255,255,0.13);
+    --accent: #A78BFA;
+    --accent2: #8BC5FF;
+    --highlight: #C4B5FD;
+    --text: #F8FAFC;
+    --muted: #9299AB;
+    --lp-glass-bg-subtle: rgba(255,255,255,0.04);
+    --lp-glass-bg-raised: rgba(255,255,255,0.09);
+    --lp-glass-bg-overlay: rgba(255,255,255,0.12);
+    --lp-glass-border-subtle: rgba(255,255,255,0.08);
+    --lp-glass-border-raised: rgba(255,255,255,0.16);
+    --lp-glass-border-overlay: rgba(255,255,255,0.22);
+    --lp-blur-sm: 12px;
+    --lp-blur-md: 28px;
+    --lp-blur-lg: 40px;
+    --lp-radius-md: 12px;
+    --lp-radius-lg: 20px;
+    --lp-radius-xl: 28px;
+    --lp-shadow-glass: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.18);
+    --lp-shadow-raised: inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 60px rgba(0,0,0,0.25);
+    --lp-focus-ring: 0 0 0 2px #A78BFA, 0 0 0 4px rgba(167,139,250,0.35);
+    --lp-btn-primary: #6A4AF0;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Glass surfaces */
+  .glass {
+    background: rgba(255,255,255,0.065);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.18);
+  }
+
+  .glass-subtle {
+    background: var(--lp-glass-bg-subtle);
+    backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid var(--lp-glass-border-subtle);
+    box-shadow: var(--lp-shadow-glass);
+    border-radius: 12px;
+  }
+
+  .glass-raised {
+    background: var(--lp-glass-bg-raised);
+    backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid var(--lp-glass-border-raised);
+    box-shadow: var(--lp-shadow-raised);
+    border-radius: 20px;
+  }
+
+  .glass-overlay {
+    background: var(--lp-glass-bg-overlay);
+    backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--lp-glass-border-overlay);
+    box-shadow: var(--lp-shadow-raised);
+    border-radius: var(--lp-radius-xl);
+  }
+
+  /* Focus rings */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--lp-focus-ring);
+    border-radius: var(--lp-radius-sm);
+  }
+
+  /* Layout */
+  .page {
+    min-height: 100vh;
+    padding: 1rem sm:p-6 lg:p-8 space-y-6 max-w-3xl;
+  }
+
+  .page-title {
+    font-display text-3xl font-bold;
+  }
+
+  .section {
+    glass rounded-2xl p-5 space-y-4;
+  }
+
+  .section-title {
+    font-display text-lg font-bold;
+  }
+
+  .control-row {
+    flex items-center justify-between;
+  }
+
+  .label-text-sm {
+    text-sm;
+  }
+
+  .switch-checkbox {
+    type: checkbox;
+    cursor-pointer;
+  }
+
+  .range-slider {
+    w-40 accent-violet-400 cursor-pointer;
+  }
+
+  .select-style {
+    glass rounded-lg px-3 py-1.5 bg-transparent transition-transform duration-150 ease-out-custom active:scale-95;
+  }
+
+  .saved-badge {
+    text-xs text-accent;
+  }
+
+  .info-text {
+    text-muted text-sm;
+  }
+
+  /* Scrollbar */
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 999px; }
+</style>
+</head>
+<body class="p-4 sm:p-6 lg:p-8 space-y-6 max-w-3xl">
+  <h1 class="font-display text-3xl font-bold">Settings</h1>
+
+  <!-- Appearance Section -->
+  <section class="glass rounded-2xl p-5 space-y-4">
+    <h2 class="font-display text-lg font-bold">Appearance</h2>
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Theme</span>
+      <select value="dark" onchange="updatePreference('theme', 'dark')" class="glass rounded-lg px-3 py-1.5 bg-transparent transition-transform duration-150 ease-out-custom active:scale-95">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+        <option value="system">System</option>
+      </select>
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Accent color</span>
+      <input type="color" value="#A78BFA" onchange="updatePreference('accent', '#A78BFA')" class="w-10 h-8 rounded cursor-pointer" />
+    </div>
+    <label class="flex items-center justify-between cursor-pointer">
+      <span class="text-sm">Reduced transparency</span>
+      <input type="checkbox" onchange="updatePreference('reducedTransparency', false)" />
+    </label>
+  </section>
+
+  <!-- Playback Section -->
+  <section class="glass rounded-2xl p-5 space-y-4">
+    <h2 class="font-display text-lg font-bold">Playback</h2>
+    
+    <!-- Default volume -->
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Default volume</span>
+      <input type="range" min="0" max="1" step="0.01" value="0.8" class="w-40 accent-violet-400 cursor-pointer" onchange="updatePref('defaultVolume', this.value)" />
+    </div>
+    
+    <!-- Autoplay -->
+    <label class="flex items-center justify-between cursor-pointer">
+      <span class="text-sm">Autoplay</span>
+      <input type="checkbox" checked onchange="updatePref('autoplay', true)" />
+    </label>
+    
+    <!-- Crossfade length -->
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Crossfade length (s)</span>
+      <input type="range" min="0" max="30" step="1" value="0" class="w-40 accent-violet-400 cursor-pointer" onchange="updatePref('crossfadeLength', this.value)" />
+    </div>
+    
+    <!-- Sleep timer -->
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Sleep timer</span>
+      <select value="0" class="glass rounded-lg px-3 py-1.5 bg-transparent w-20 transition-transform duration-150 ease-out-custom active:scale-95" onchange="updatePref('sleepTimerMinutes', this.value)">
+        <option value="0">Off</option>
+        <option value="15">15 minutes</option>
+        <option value="30">30 minutes</option>
+        <option value="60">60 minutes</option>
+      </select>
+    </div>
+    
+    <!-- Audio quality -->
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Audio quality</span>
+      <select value="standard" class="glass rounded-lg px-3 py-1.5 bg-transparent w-20 transition-transform duration-150 ease-out-custom active:scale-95" onchange="updatePref('audioQuality', this.value)">
+        <option value="standard">Standard</option>
+        <option value="high">High</option>
+        <option value="lossless">Lossless</option>
+      </select>
+    </div>
+    
+    <!-- Remember playback position -->
+    <label class="flex items-center justify-between cursor-pointer">
+      <span class="text-sm">Remember playback position</span>
+      <input type="checkbox" checked onchange="updatePref('rememberPosition', true)" />
+    </label>
+  </section>
+
+  <!-- Lyrics Section -->
+  <section class="glass rounded-2xl p-5 space-y-4">
+    <h2 class="font-display text-lg font-bold">Lyrics</h2>
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Auto scroll</span>
+      <input type="checkbox" checked onchange="updatePref('lyricsAutoScroll', true)" />
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Font size</span>
+      <select value="md" class="glass rounded-lg px-3 py-1.5 bg-transparent transition-transform duration-150 ease-out-custom active:scale-95" onchange="updatePref('lyricsFontSize', this.value)">
+        <option value="sm">Small</option>
+        <option value="md">Medium</option>
+        <option value="lg">Large</option>
+      </select>
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Sync offset (s)</span>
+      <input type="number" step="0.1" value="0" class="glass rounded-lg px-3 py-1.5 bg-transparent w-20 transition-transform duration-150 ease-out-custom active:scale-95" onchange="updatePref('lyricsOffset', this.value)" />
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Default lyrics mode</span>
+      <select value="compact" class="glass rounded-lg px-3 py-1.5 bg-transparent transition-transform duration-150 ease-out-custom active:scale-95" onchange="updatePref('lyricsMode', this.value)">
+        <option value="compact">Compact</option>
+        <option value="immersive">Immersive</option>
+      </select>
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-sm">Lyrics theme</span>
+      <select value="default" class="glass rounded-lg px-3 py-1.5 bg-transparent transition-transform duration-150 ease-out-custom active:scale-95" onchange="updatePref('lyricsTheme', this.value)">
+        <option value="default">Default</option>
+        <option value="minimal">Minimal</option>
+        <option value="highlight">Highlight</option>
+        <option value="karaoke">Karaoke</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Privacy Section -->
+  <section class="glass rounded-2xl p-5 space-y-4">
+    <h2 class="font-display text-lg font-bold">Privacy</h2>
+    <label class="flex items-center justify-between cursor-pointer">
+      <span class="text-sm">Private profile</span>
+      <input type="checkbox" checked onchange="updatePref('privateProfile', true)" />
+    </label>
+    <label class="flex items-center justify-between cursor-pointer">
+      <span class="text-sm">Private playlists</span>
+      <input type="checkbox" checked onchange="updatePref('privatePlaylists', true)" />
+    </label>
+  </section>
+
+  <!-- Account Section -->
+  <section class="glass rounded-2xl p-5 space-y-4">
+    <h2 class="font-display text-lg font-bold">Account</h2>
+    <button class="w-full text-left px-4 py-3 glass rounded-xl hover:bg-white/10 text-sm transition-transform duration-150 ease-out-custom active:scale-95">Update email</button>
+    <button class="w-full text-left px-4 py-3 glass rounded-xl hover:bg-white/10 text-sm transition-transform duration-150 ease-out-custom active:scale-95">Change password</button>
+    <button class="w-full text-left px-4 py-3 glass rounded-xl hover:bg-red-500/10 text-sm text-red-400 transition-transform duration-150 ease-out-custom active:scale-95">Delete account</button>
+  </section>
+  
+  <div class="text-xs text-accent">Saved</div>
+</body>
+</html>

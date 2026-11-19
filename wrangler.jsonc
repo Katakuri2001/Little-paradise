@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "little-paradise",
+  "compatibility_date": "2025-03-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "little_paradise_db", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }
+  ],
+  "r2_buckets": [
+    { "binding": "BUCKET", "bucket_name": "little-paradise-assets" }
+  ],
+  "kv_namespaces": [
+    { "binding": "KV", "id": "00000000000000000000000000000000" }
+  ],
+  "vars": {
+    "JWT_ISSUER": "little-paradise",
+    "TOKEN_TTL_SECONDS": "604800"
+  }
+}

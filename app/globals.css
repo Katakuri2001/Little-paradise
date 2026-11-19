@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #090B12;
+  --bg2: #111522;
+  --glass: rgba(255,255,255,0.065);
+  --border: rgba(255,255,255,0.13);
+  --accent: #A78BFA;
+  --accent2: #8BC5FF;
+  --highlight: #C4B5FD;
+  --text: #F8FAFC;
+  --muted: #9299AB;
+  --admin-bg: #07080d;
+  --admin-muted: #8b93a6;
+  /* Design tokens */
+  --lp-glass-bg-subtle: rgba(255,255,255,0.04);
+  --lp-glass-bg-raised: rgba(255,255,255,0.09);
+  --lp-glass-bg-overlay: rgba(255,255,255,0.12);
+  --lp-glass-border-subtle: rgba(255,255,255,0.08);
+  --lp-glass-border-raised: rgba(255,255,255,0.16);
+  --lp-glass-border-overlay: rgba(255,255,255,0.22);
+  --lp-blur-sm: 12px;
+  --lp-blur-md: 28px;
+  --lp-blur-lg: 40px;
+  --lp-radius-sm: 8px;
+  --lp-radius-md: 12px;
+  --lp-radius-lg: 20px;
+  --lp-radius-xl: 28px;
+  --lp-shadow-glass: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.18);
+  --lp-shadow-raised: inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 60px rgba(0,0,0,0.25);
+  --lp-focus-ring: 0 0 0 2px #A78BFA, 0 0 0 4px rgba(167,139,250,0.35);
+  --lp-btn-primary: #6A4AF0;
+}
+
+/* Admin visual theme */
+:root.is-admin {
+  --bg: var(--admin-bg);
+  --bg2: #0c0f18;
+  --glass: rgba(255,255,255,0.05);
+  --accent: #a78bfa;
+  --muted: var(--admin-muted);
+}
+
+[data-reduced-transparency="true"] :root, :root[data-reduced-transparency="true"] {
+  --lp-glass-bg-subtle: rgba(20,24,40,0.92);
+  --lp-glass-bg-raised: rgba(20,24,40,0.96);
+  --lp-glass-bg-overlay: rgba(20,24,40,0.98);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.glass {
+  background: rgba(255,255,255,0.065);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.18);
+}
+
+.glass-strong {
+  background: rgba(255,255,255,0.09);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.glass-subtle {
+  background: var(--lp-glass-bg-subtle);
+  backdrop-filter: blur(var(--lp-blur-sm)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--lp-blur-sm)) saturate(140%);
+  border: 1px solid var(--lp-glass-border-subtle);
+  box-shadow: var(--lp-shadow-glass);
+  border-radius: var(--lp-radius-md);
+}
+.glass-raised {
+  background: var(--lp-glass-bg-raised);
+  backdrop-filter: blur(var(--lp-blur-md)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--lp-blur-md)) saturate(160%);
+  border: 1px solid var(--lp-glass-border-raised);
+  box-shadow: var(--lp-shadow-raised);
+  border-radius: var(--lp-radius-lg);
+}
+.glass-overlay {
+  background: var(--lp-glass-bg-overlay);
+  backdrop-filter: blur(var(--lp-blur-lg)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--lp-blur-lg)) saturate(180%);
+  border: 1px solid var(--lp-glass-border-overlay);
+  box-shadow: var(--lp-shadow-raised);
+  border-radius: var(--lp-radius-xl);
+}
+
+/* Focus rings */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--lp-focus-ring);
+  border-radius: var(--lp-radius-sm);
+}
+
+/* Custom easing curves per emil-design-eng skill
+   Never use ease-in for UI animations - it starts slow and feels sluggish.
+   Use ease-out for responsive UI that starts fast. */
+/* Strong ease-out for UI interactions - starts fast, feels responsive */
+.ease-out-custom {
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+/* Strong ease-in-out for on-screen movement */
+.ease-in-out-custom {
+  transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+}
+/* iOS-like drawer curve */
+.ease-drawer-custom {
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .glass-subtle, .glass-raised, .glass-overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 999px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes floatSlow { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+}
+
+/* Lyrics display themes */
+.lyrics-theme-default { }
+.lyrics-theme-minimal { background: rgba(0,0,0,0.2); }
+.lyrics-theme-highlight { background: linear-gradient(180deg, transparent 0%, rgba(167,139,250,0.05) 50%, transparent 100%); }
+.lyrics-theme-karaoke { background: rgba(9,11,18,0.95); }
+
+/* Lyrics display themes */
+.lyrics-theme-default { }
+.lyrics-theme-minimal { background: rgba(0,0,0,0.2); }
+.lyrics-theme-highlight { background: linear-gradient(180deg, transparent 0%, rgba(167,139,250,0.05) 50%, transparent 100%); }
+.lyrics-theme-karaoke { background: rgba(9,11,18,0.95); }

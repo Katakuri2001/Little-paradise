@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Paradise - Lyrics</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --bg: #090B12;
+    --bg2: #111522;
+    --glass: rgba(255,255,255,0.065);
+    --border: rgba(255,255,255,0.13);
+    --accent: #A78BFA;
+    --accent2: #8BC5FF;
+    --highlight: #C4B5FD;
+    --text: #F8FAFC;
+    --muted: #9299AB;
+    --lp-glass-bg-subtle: rgba(255,255,255,0.04);
+    --lp-glass-bg-raised: rgba(255,255,255,0.09);
+    --lp-glass-bg-overlay: rgba(255,255,255,0.12);
+    --lp-glass-border-subtle: rgba(255,255,255,0.08);
+    --lp-glass-border-raised: rgba(255,255,255,0.16);
+    --lp-glass-border-overlay: rgba(255,255,255,0.22);
+    --lp-blur-sm: 12px;
+    --lp-blur-md: 28px;
+    --lp-blur-lg: 40px;
+    --lp-radius-md: 12px;
+    --lp-radius-lg: 20px;
+    --lp-radius-xl: 28px;
+    --lp-shadow-glass: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.18);
+    --lp-shadow-raised: inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 60px rgba(0,0,0,0.25);
+    --lp-focus-ring: 0 0 0 2px #A78BFA, 0 0 0 4px rgba(167,139,250,0.35);
+    --lp-btn-primary: #6A4AF0;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Glass surfaces */
+  .glass {
+    background: rgba(255,255,255,0.065);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.18);
+  }
+
+  .glass-raised {
+    background: var(--lp-glass-bg-raised);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid var(--lp-glass-border-raised);
+    box-shadow: var(--lp-shadow-raised);
+    border-radius: var(--lp-radius-lg);
+  }
+
+  .glass-subtle {
+    background: var(--lp-glass-bg-subtle);
+    backdrop-filter: blur(var(--lp-blur-sm)) saturate(140%);
+    border: 1px solid var(--lp-glass-border-subtle);
+    box-shadow: var(--lp-shadow-glass);
+    border-radius: var(--lp-radius-md);
+  }
+
+  /* Focus rings */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--lp-focus-ring);
+    border-radius: var(--lp-radius-sm);
+  }
+
+  /* Layout */
+  .page {
+    min-height: 100vh;
+    padding: 1rem sm:p-6 lg:p-8;
+    max-width: 1400px;
+    margin: 0 auto;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .header {
+    flex items-center justify-between mb-4;
+  }
+
+  .page-title {
+    font-display text-2xl font-bold;
+  }
+
+  .toggle-btn {
+    glass px-3 py-1.5 rounded-full text-xs hover:bg-white/10;
+  }
+
+  .lyrics-container {
+    flex-1 grid lg:grid-cols-[320px_1fr] gap-6 min-h-0;
+  }
+
+  .artwork-container {
+    hidden lg:flex flex-col items-center justify-center glass rounded-2xl p-6;
+  }
+
+  .artwork-seed {
+    size={200} spinning={isPlaying};
+  }
+
+  .track-title {
+    font-display font-bold text-lg;
+  }
+
+  .track-artist {
+    text-sm text-muted;
+  }
+
+  .track-album {
+    text-xs text-muted mt-1;
+  }
+
+  .lyrics-container-glass {
+    glass rounded-2xl overflow-hidden;
+  }
+
+  .lyrics-container {
+    relative h-full;
+  }
+
+  .lyrics-container-relative {
+    relative h-full;
+  }
+
+  .lyrics-page {
+    relative h-full;
+  }
+
+  .lyrics-line {
+    cursor-pointer leading-relaxed ${sizeClass} ${isActive ? "font-semibold" : "font-normal"} ${compact ? "text-center" : ""} ${isKaraoke ? "karaoke-line" : ""};
+  }
+
+  .lyrics-line-normal {
+    cursor-pointer leading-relaxed ${sizeClass} ${isActive ? "font-semibold" : "font-normal"} ${compact ? "text-center" : ""}
+  }
+
+  .lyrics-line-karaoke {
+    cursor-pointer leading-relaxed ${sizeClass} ${isActive ? "font-semibold" : "font-normal"} ${compact ? "text-center" : ""} ${isKaraoke ? "karaoke-line" : ""}
+  }
+
+  .lyric-line {
+    cursor-pointer leading-relaxed ${sizeClass} ${isActive ? "font-semibold" : "font-normal"} ${compact ? "text-center" : ""} ${isKaraoke ? "karaoke-line" : ""}
+  }
+
+  .lyrics-text-normal {
+    isActive ? "bg-gradient-to-r from-violet-300 to-sky-300 bg-clip-text text-transparent" : "text-white/80"
+  }
+
+  .lyrics-text-karaoke {
+    w-isActive ? "bg-gradient-to-r from-violet-300 to-sky-300 bg-clip-text text-transparent font-semibold" : "text-white/60"
+  }
+
+  .lyrics-translation {
+    text-xs text-muted/60 mt-0.5 italic;
+  }
+
+  /* Lyrics themes */
+  .lyrics-theme-default { }
+  .lyrics-theme-minimal { background: rgba(0,0,0,0.2); }
+  .lyrics-theme-highlight { background: linear-gradient(180deg, transparent 0%, rgba(167,139,250,0.05) 50%, transparent 100%); }
+  .lyrics-theme-karaoke { background: rgba(9,11,18,0.95); }
+
+  /* Karaoke line styling */
+  .karaoke-line {
+    /* Will have word-level highlighting applied via JS */
+  }
+
+  .karaoke-word {
+    cursor-pointer;
+    transition: all 0.2s ease;
+  }
+
+  .lyric-line.clickable {
+    cursor: pointer;
+  }
+
+  /* Jump to current line button */
+  .jump-to-current {
+    absolute top-3 left-1/2 -translate-x-1/2 z-10 px-3 py-1.5 rounded-full glass text-xs hover:bg-white/10;
+  }
+
+  /* Toggle buttons */
+  .toggle-btn {
+    glass px-3 py-1.5 rounded-full text-xs hover:bg-white/10;
+  }
+
+  /* Compact/immersive toggle */
+  .mode-toggle {
+    glass px-3 py-1.5 rounded-full text-xs hover:bg-white/10 flex items-center gap-1;
+  }
+
+  /* Lyrics offset control */
+  .offset-control {
+    flex items-center justify-between;
+  }
+
+  /* Lyrics theme selector */
+  .lyrics-theme-select {
+    glass rounded-lg px-3 py-1.5 bg-transparent w-20 transition-transform duration-150 ease-out-custom active:scale-95;
+  }
+</style>
+</head>
+<body class="p-4 sm:p-6 lg:p-8 h-[calc(100vh-7rem)] flex flex-col">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="font-display text-2xl font-bold">Lyrics</h1>
+    <div class="flex gap-2">
+      <button onClick={() => setImmersive(!immersive)} class="glass px-3 py-1.5 rounded-full text-xs hover:bg-white/10">
+        {immersive ? "Compact" : "Immersive"}
+      </button>
+      <Link href="/player" className="glass px-3 py-1.5 rounded-full text-xs hover:bg-white/10 flex items-center gap-1">
+        <Maximize2 size={12} /> Fullscreen
+      </button>
+    </div>
+  </div>
+
+  <div class="flex-1 flex flex-col">
+    {!currentTrack ? (
+      <div class="flex-1 flex flex-col items-center justify-center gap-4">
+        <div class="text-muted">Select a track to view lyrics</div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl">
+          {TRACKS.map((t) => (
+            <button key={t.id} onClick={() => playTrack(t, TRACKS)} className="glass rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 text-left">
+              <Artwork seed={t.artworkSeed} size={36} />
+              <div class="min-w-0">
+                <div className="text-sm font-medium truncate">{t.title}</div>
+                <div className="text-xs text-muted truncate">{t.artist}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div class="flex-1 grid lg:grid-cols-[320px_1fr] gap-6 min-h-0">
+          <div class="hidden lg:flex flex-col items-center justify-center glass rounded-2xl p-6">
+            <Artwork seed={currentTrack.artworkSeed} size={200} spinning={usePlayerStore.getState().isPlaying} />
+            <div class="mt-4 text-center">
+              <div className="font-display font-bold text-lg">{currentTrack.title}</div>
+              <div className="text-sm text-muted">{currentTrack.artist}</div>
+              <div className="text-xs text-muted mt-1">{currentTrack.album}</div>
+            </div>
+          </div>
+          <div class="glass rounded-2xl overflow-hidden">
+            <div class="relative h-full ${themeClass}">
+              {paused && (
+                <button onClick={jumpToCurrent}
+                  className="absolute top-3 left-1/2 -translate-x-1/2 z-10 px-3 py-1.5 rounded-full glass text-xs hover:bg-white/10">
+                  Jump to current line
+                </button>
+              )}
+              <div ref={containerRef} class={`h-full overflow-y-auto scrollbar-thin px-4 py-8 space-y-3 ${compact ? "" : ""}`}>
+                {lines.map((line, i) => {
+                  const isActive = i === activeIndex;
+                  const distance = activeIndex >= 0 ? Math.abs(i - activeIndex) : 0;
+                  const blur = isActive ? 0 : Math.min(distance * 0.5, 2);
+                  const opacity = isActive ? 1 : Math.max(0.25, 1 - distance * 0.12);
+                  const isKaraoke = theme === "karaoke" && isActive && line.words;
+                  
+                  return (
+                    <motion.div
+                      key={i}
+                      ref={isActive ? activeRef : null}
+                      initial={false}
+                      animate={{
+                        opacity,
+                        scale: isActive ? 1.05 : 1,
+                        filter: `blur(${blur}px)`
+                      }}
+                      transition={{ duration: 0.4 }}
+                      onClick={() => {
+                        usePlayerStore.getState().setCurrentTime(line.time);
+                        const a = (window as { __lpAudio?: HTMLAudioElement }).__lpAudio;
+                        if (a) a.currentTime = line.time;
+                      }}
+                      className={`cursor-pointer leading-relaxed ${sizeClass} ${isActive ? "font-semibold" : "font-normal"} ${compact ? "text-center" : ""} ${isKaraoke ? "karaoke-line" : ""}`}
+                    >
+                      {isKaraoke ? (
+                        <>
+                          {line.words.map((w, wi) => {
+                            const wIsActive = isActive && activeRef.current && activeRef.current === lines[activeIndex] && i === activeIndex && wi === activeWords.findIndex((aw) => aw.time <= currentTime && aw.time > (activeWords[wi - 1]?.time ?? 0));
+                            return (
+                              <span
+                                key={wi}
+                                className={`cursor-pointer ${wIsActive ? "bg-gradient-to-r from-violet-300 to-sky-300 bg-clip-text text-transparent font-semibold" : "text-white/60"}`}
+                                onClick={() => {
+                                  usePlayerStore.getState().setCurrentTime(w.time);
+                                  const a = (window as { __lpAudio?: HTMLAudioElement }).__lpAudio;
+                                  if (a) a.currentTime = w.time;
+                                }}
+                              >
+                                {w.word} {wi < line.words.length - 1 ? " " : ""}
+                              </span>
+                            </span>
+                          })}
+                        ) : isActive ? (
+                          <span className="bg-gradient-to-r from-violet-300 to-sky-300 bg-clip-text text-transparent">{line.text}</span>
+                        ) : (
+                          <span className="text-white/80">{line.text}</span>
+                        )}
+                        {isActive && line.translation && (
+                          <div className="text-xs text-muted/60 mt-0.5 italic">{line.translation}</div>
+                        )}
+                      </motion.div>
+                    ))}
+                    <div className="h-32" />
+                  </div>
+                </div>
+              )}
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </body>
+</html>
