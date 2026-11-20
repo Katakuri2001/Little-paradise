@@ -37,7 +37,9 @@ export default function Register() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Register failed");
+        const errMsg =
+          typeof data.error === "string" ? data.error : data.error?.message ?? "Register failed";
+        setError(errMsg);
         setLoading(false);
         return;
       }
@@ -48,8 +50,9 @@ export default function Register() {
       } else {
         router.push("/");
       }
-    } catch {
-      setError("Register failed");
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : "Register failed";
+      setError(errMsg);
       setLoading(false);
     }
   };

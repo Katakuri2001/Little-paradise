@@ -36,7 +36,9 @@ export default function Login() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Login failed");
+        const errMsg =
+          typeof data.error === "string" ? data.error : data.error?.message ?? "Login failed";
+        setError(errMsg);
         setLoading(false);
         return;
       }
@@ -47,8 +49,9 @@ export default function Login() {
       } else {
         router.push("/");
       }
-    } catch {
-      setError("Login failed");
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : "Login failed";
+      setError(errMsg);
       setLoading(false);
     }
   };
