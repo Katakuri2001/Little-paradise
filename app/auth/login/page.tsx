@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLibraryStore } from "@/lib/store/libraryStore";
@@ -10,7 +10,19 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const user = useLibraryStore((s) => s.user);
+  const isAuthenticated = useLibraryStore((s) => s.isAuthenticated);
   const login = useLibraryStore((s) => s.login);
+
+  // RBAC: redirect already-authenticated users away from auth pages
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    if (user?.role === "admin") {
+      router.push("/admin/dashboard");
+    } else {
+      router.push("/");
+    }
+  }, [isAuthenticated, user, router]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,9 +35,18 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error ?? "Login failed"); setLoading(false); return; }
+      if (!res.ok) {
+        setError(data.error ?? "Login failed");
+        setLoading(false);
+        return;
+      }
       login(data.user);
-      router.push("/");
+      // RBAC: redirect based on role after login
+      if (data.user.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
     } catch {
       setError("Login failed");
       setLoading(false);
@@ -34,7 +55,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#090B12]">
-      <div className="glass-raised rounded-3xl p-6 sm:p-8 w-full max-w-md space-y-6 shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+      <div className="glass-raised rounded-3xl p-6 sm:p-8 w-full max-w-md space-y-6">
         <div className="text-center">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-sky-500 flex items-center justify-center mx-auto mb-3 shadow-lg">
             <span className="text-white font-bold text-sm">LP</span>
