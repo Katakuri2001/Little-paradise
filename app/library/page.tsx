@@ -19,18 +19,24 @@ export default function Library() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-8">
-      <h1 className="font-display text-3xl font-bold">Your Library</h1>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight">Your Library</h1>
+          <p className="text-muted mt-1">Your music, your way — all in one place.</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {sections.map((s) => {
           const Icon = s.icon;
           return (
-            <Link key={s.title} href={s.href} className="glass rounded-2xl p-5 hover:bg-white/10 transition flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
+            <Link key={s.title} href={s.href} className="glass-raised p-5 flex items-center gap-4 group transition-transform duration-150 ease-out-custom hover:scale-[1.01]">
+              <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-150 ease-out-custom">
                 <Icon size={22} className="text-accent" />
               </div>
               <div className="flex-1">
                 <div className="font-medium">{s.title}</div>
-                <div className="text-xs text-muted">{s.desc}</div>
+                <div className="text-xs text-muted mt-0.5">{s.desc}</div>
               </div>
               <div className="text-2xl font-display font-bold text-muted">{s.count}</div>
             </Link>
@@ -40,11 +46,18 @@ export default function Library() {
 
       {recentTracks.length > 0 && (
         <section>
-          <h2 className="font-display text-xl font-bold mb-4">Recently Played</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display text-xl font-bold">Recently Played</h2>
+            <Link href="/recent" className="text-xs text-accent hover:text-accent/90 flex items-center gap-1">
+              View all <span className="text-sm">→</span>
+            </Link>
+          </div>
           <div className="space-y-1">
             {recentTracks.map((t: any) => (
-              <div key={t.id} className="glass rounded-xl p-3 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-sky-500" />
+              <div key={t.id} className="glass rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:bg-white/5 transition-colors duration-150 ease-out-custom">
+                <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-sky-500 flex items-center justify-center shrink-0">
+                  <span className="text-[10px] font-bold text-white/80">{t.title[0]}</span>
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{t.title}</div>
                   <div className="text-xs text-muted truncate">{t.artist}</div>
