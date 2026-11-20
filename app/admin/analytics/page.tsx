@@ -4,16 +4,12 @@ import { useEffect, useState } from "react";
 import AdminGuard from "@/components/layout/AdminGuard";
 import { AdminStatCard } from "@/components/ui/AdminStatCard";
 import { AdminTable } from "@/components/ui/AdminTable";
-import { isAdminUser } from "@/lib/server/admin-helper";
 import { useLibraryStore } from "@/lib/store/libraryStore";
 
 export default function AdminAnalytics() {
-  const user = useLibraryStore((s) => s.user);
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  if (!isAdminUser(user)) return null;
 
   useEffect(() => {
     let cancelled = false;
@@ -35,59 +31,61 @@ export default function AdminAnalytics() {
   }, []);
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-bold tracking-tight">Analytics</h1>
-          <p className="text-muted mt-1">Monitor audit logs and system activity.</p>
-        </div>
-        <Link href="/admin" className="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
-          Back to Dashboard
-        </Link>
-      </div>
-
-      {loading && (
-        <div className="flex flex-col items-center justify-center py-20">
-          <p className="text-muted">Loading analytics...</p>
-        </div>
-      )}
-
-      {!loading && error && (
-        <div className="glass-raised rounded-2xl p-8 text-center">
-          <p className="text-rose-400">{error}</p>
-          <button
-            onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
-            className="mt-5 px-5 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-transform duration-150 ease-out-custom active:scale-95"
-          >
-            Retry
-          </button>
-        </div>
-      )}
-
-      {!loading && !error && (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <AdminStatCard value={logs.length} label="Audit Log Entries" />
-            <AdminStatCard value="—" label="Storage Used" />
-            <AdminStatCard value="—" label="Cache Hit Rate" />
+    <AdminGuard>
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-3xl font-bold tracking-tight">Analytics</h1>
+            <p className="text-muted mt-1">Monitor audit logs and system activity.</p>
           </div>
+          <Link href="/admin" className="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
+            Back to Dashboard
+          </Link>
+        </div>
 
-          <section className="glass-raised rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display text-xl font-bold">Audit Log</h2>
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <p className="text-muted">Loading analytics...</p>
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="glass-raised rounded-2xl p-8 text-center">
+            <p className="text-rose-400">{error}</p>
+            <button
+              onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
+              className="mt-5 px-5 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-transform duration-150 ease-out-custom active:scale-95"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {!loading && !error && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <AdminStatCard value={logs.length} label="Audit Log Entries" />
+              <AdminStatCard value="—" label="Storage Used" />
+              <AdminStatCard value="—" label="Cache Hit Rate" />
             </div>
-            <AdminTable
-              columns={[
-                { key: "action", label: "Action" },
-                { key: "target_type", label: "Target Type" },
-                { key: "target_id", label: "Target ID" },
-                { key: "created_at", label: "Created At", render: (v) => new Date(v as string).toLocaleString() },
-              ]}
-              rows={logs}
-            />
-          </section>
-        </>
-      )}
-    </div>
+
+            <section className="glass-raised rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-xl font-bold">Audit Log</h2>
+              </div>
+              <AdminTable
+                columns={[
+                  { key: "action", label: "Action" },
+                  { key: "target_type", label: "Target Type" },
+                  { key: "target_id", label: "Target ID" },
+                  { key: "created_at", label: "Created At", render: (v) => new Date(v as string).toLocaleString() },
+                ]}
+                rows={logs}
+              />
+            </section>
+          </>
+        )}
+      </div>
+    </AdminGuard>
   );
 }
