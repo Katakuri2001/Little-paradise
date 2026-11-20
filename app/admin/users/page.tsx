@@ -56,10 +56,13 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl font-bold">User Management</h1>
-        <Link href="/admin" className="px-4 py-2 rounded-full bg-white/10 text-muted hover:bg-white/20">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight">User Management</h1>
+          <p className="text-muted mt-1">Manage user accounts, roles, and access status.</p>
+        </div>
+        <Link href="/admin" className="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
           Back to Dashboard
         </Link>
       </div>
@@ -71,11 +74,11 @@ export default function AdminUsers() {
       )}
 
       {!loading && error && (
-        <div className="glass rounded-2xl p-6 text-center">
-          <p className="text-red-400">{error}</p>
+        <div className="glass-raised rounded-2xl p-8 text-center">
+          <p className="text-rose-400">{error}</p>
           <button
             onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
-            className="mt-4 px-4 py-2 rounded-full bg-white text-black text-sm font-medium hover:scale-105 transition"
+            className="mt-5 px-5 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-transform duration-150 ease-out-custom active:scale-95"
           >
             Retry
           </button>
@@ -85,7 +88,7 @@ export default function AdminUsers() {
       {!loading && !error && (
         <>
           <p className="text-muted">
-            Manage users and their roles. Server-side RBAC and admin API routes are fully enforced.
+            Server-side RBAC and admin API routes are fully enforced for all mutations.
           </p>
 
           <AdminTable
@@ -93,9 +96,9 @@ export default function AdminUsers() {
               { key: "email", label: "Email" },
               { key: "username", label: "Username" },
               { key: "displayName", label: "Display Name" },
-              { key: "role", label: "Role" },
-              { key: "status", label: "Status" },
-              { key: "createdAt", label: "Created" },
+              { key: "role", label: "Role", render: (v) => <AdminBadge kind={(v as string) === "admin" ? "admin" : "user"}>{v as string}</AdminBadge> },
+              { key: "status", label: "Status", render: (v) => <AdminBadge kind={(v as string) === "active" ? "active" : "suspended"}>{v as string}</AdminBadge> },
+              { key: "createdAt", label: "Created", render: (v) => new Date(v as string).toLocaleDateString() },
             ]}
             rows={users}
             actions={[
@@ -104,13 +107,6 @@ export default function AdminUsers() {
               { label: "Delete", onClick: (id) => handleAction("delete", id) },
             ]}
           />
-
-          {users.map((u) => (
-            <div key={u.id} className="mt-2 flex gap-2">
-              <AdminBadge kind={u.role === "admin" ? "admin" : "user"}>{u.role}</AdminBadge>
-              <AdminBadge kind={u.status === "active" ? "active" : "suspended"}>{u.status}</AdminBadge>
-            </div>
-          ))}
         </>
       )}
     </div>

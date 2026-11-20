@@ -35,10 +35,13 @@ export default function AdminAnalytics() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl font-bold">Analytics</h1>
-        <Link href="/admin" className="px-4 py-2 rounded-full bg-white/10 text-muted hover:bg-white/20">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight">Analytics</h1>
+          <p className="text-muted mt-1">Monitor audit logs and system activity.</p>
+        </div>
+        <Link href="/admin" className="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
           Back to Dashboard
         </Link>
       </div>
@@ -50,11 +53,11 @@ export default function AdminAnalytics() {
       )}
 
       {!loading && error && (
-        <div className="glass rounded-2xl p-6 text-center">
-          <p className="text-red-400">{error}</p>
+        <div className="glass-raised rounded-2xl p-8 text-center">
+          <p className="text-rose-400">{error}</p>
           <button
             onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
-            className="mt-4 px-4 py-2 rounded-full bg-white text-black text-sm font-medium hover:scale-105 transition"
+            className="mt-5 px-5 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-transform duration-150 ease-out-custom active:scale-95"
           >
             Retry
           </button>
@@ -69,14 +72,16 @@ export default function AdminAnalytics() {
             <AdminStatCard value="—" label="Cache Hit Rate" />
           </div>
 
-          <section className="glass rounded-2xl p-6">
-            <h2 className="font-display text-xl font-bold mb-4">Audit Log</h2>
+          <section className="glass-raised rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-xl font-bold">Audit Log</h2>
+            </div>
             <AdminTable
               columns={[
                 { key: "action", label: "Action" },
                 { key: "target_type", label: "Target Type" },
                 { key: "target_id", label: "Target ID" },
-                { key: "created_at", label: "Created At" },
+                { key: "created_at", label: "Created At", render: (v) => new Date(v as string).toLocaleString() },
               ]}
               rows={logs}
             />

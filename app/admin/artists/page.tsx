@@ -47,10 +47,13 @@ export default function AdminArtists() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl font-bold">Artists & Albums</h1>
-        <Link href="/admin" className="px-4 py-2 rounded-full bg-white/10 text-muted hover:bg-white/20">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight">Artists & Albums</h1>
+          <p className="text-muted mt-1">Manage artist profiles and album metadata.</p>
+        </div>
+        <Link href="/admin" className="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
           Back to Dashboard
         </Link>
       </div>
@@ -62,11 +65,11 @@ export default function AdminArtists() {
       )}
 
       {!loading && error && (
-        <div className="glass rounded-2xl p-6 text-center">
-          <p className="text-red-400">{error}</p>
+        <div className="glass-raised rounded-2xl p-8 text-center">
+          <p className="text-rose-400">{error}</p>
           <button
             onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
-            className="mt-4 px-4 py-2 rounded-full bg-white text-black text-sm font-medium hover:scale-105 transition"
+            className="mt-5 px-5 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-transform duration-150 ease-out-custom active:scale-95"
           >
             Retry
           </button>
@@ -76,15 +79,15 @@ export default function AdminArtists() {
       {!loading && !error && (
         <>
           <p className="text-muted">
-            Manage artists. Server-side admin API routes are fully enforced.
+            Server-side admin API routes are fully enforced for all mutations.
           </p>
 
           <AdminTable
             columns={[
               { key: "name", label: "Name" },
-              { key: "followers", label: "Followers" },
+              { key: "followers", label: "Followers", render: (v) => Number(v || 0).toLocaleString() },
               { key: "genre", label: "Genre" },
-              { key: "tracks", label: "Tracks" },
+              { key: "tracks", label: "Tracks", render: (v) => Number(v || 0).toLocaleString() },
             ]}
             rows={artists}
             actions={[

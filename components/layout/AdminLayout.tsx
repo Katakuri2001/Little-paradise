@@ -30,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-neutral-950">
+    <div className="min-h-screen flex flex-col bg-[#090B12]">
       {/* Mobile header with menu toggle */}
       <header className="lg:hidden fixed top-0 inset-x-0 z-40 glass border-b border-white/10 px-4 py-3">
         <div className="flex items-center justify-between">
@@ -42,11 +42,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Menu size={20} />
           </button>
           <Link href="/admin/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-sky-500 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-sky-500 flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-xs">LP</span>
             </div>
             <div className="hidden sm:flex flex-col">
-              <div className="text-sm font-bold">Little Paradise</div>
+              <div className="text-sm font-bold font-display">Little Paradise</div>
               <div className="text-xs text-muted">Admin</div>
             </div>
           </Link>
@@ -62,12 +62,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               onClick={() => setMobileOpen(false)}
             />
             <aside
-              className={`fixed inset-y-0 left-0 z-50 glass border-r border-white/10 w-64 flex flex-col transform transition-transform duration-200 ease-out ${mobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+              className={`fixed inset-y-0 left-0 z-50 glass border-r border-white/10 w-64 flex flex-col transform transition-transform duration-200 ease-out-custom ${mobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
             >
               <div className="flex items-center justify-between p-4 border-b border-white/10">
                 <Link href="/admin/dashboard" className="flex items-center gap-2">
                   <ChevronLeft size={18} className="text-muted" aria-hidden="true" />
-                  <span className="text-sm font-medium">Back to Dashboard</span>
+                  <span className="text-sm font-medium font-display">Back to Dashboard</span>
                 </Link>
                 <button
                   className="p-1.5 rounded-lg text-muted hover:text-white hover:bg-white/5"
@@ -89,10 +89,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       key={n.href}
                       href={n.href}
                       onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted hover:text-white hover:bg-white/5 transition text-sm"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted hover:text-white hover:bg-white/5 transition-colors duration-150 ease-out-custom text-sm"
                     >
                       <Icon size={18} />
-                      <span>{n.label}</span>
+                      <span className="font-medium">{n.label}</span>
                     </Link>
                   );
                 })}
@@ -102,10 +102,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Link
                   href="/"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted hover:text-white hover:bg-white/5 transition text-sm"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted hover:text-white hover:bg-white/5 transition-colors duration-150 ease-out-custom text-sm"
                 >
                   <LogOut size={18} />
-                  <span>Exit Admin</span>
+                  <span className="font-medium">Exit Admin</span>
                 </Link>
               </div>
             </aside>
@@ -131,7 +131,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link
                     key={n.href}
                     href={n.href}
-                    className="flex items-center justify-center px-2 py-2 rounded-xl text-muted hover:text-white hover:bg-white/5 transition"
+                    className="flex items-center justify-center px-2 py-2 rounded-xl text-muted hover:text-white hover:bg-white/5 transition-colors duration-150 ease-out-custom"
                     title={n.label}
                   >
                     <Icon size={18} />
@@ -143,7 +143,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="p-2 border-t border-white/10">
               <Link
                 href="/"
-                className="flex items-center justify-center px-2 py-2 rounded-xl text-muted hover:text-white hover:bg-white/5 transition"
+                className="flex items-center justify-center px-2 py-2 rounded-xl text-muted hover:text-white hover:bg-white/5 transition-colors duration-150 ease-out-custom"
                 title="Exit Admin"
               >
                 <LogOut size={18} />
@@ -154,7 +154,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Admin main content */}
         <main
-          className={`flex-1 transition-all duration-200 ${collapsed ? "lg:ml-16" : "lg:ml-64"}`}
+          className={`flex-1 transition-all duration-200 ease-out-custom ${collapsed ? "lg:ml-16" : "lg:ml-64"}`}
           id="admin-content"
         >
           <div className="min-h-screen pt-14 pb-32 p-4 sm:p-6 lg:p-8">

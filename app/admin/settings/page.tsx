@@ -15,54 +15,77 @@ export default function AdminSettings() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl font-bold">App Settings</h1>
-        <Link href="/admin" className="px-4 py-2 rounded-full bg-white/10 text-muted hover:bg-white/20">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight">App Settings</h1>
+          <p className="text-muted mt-1">Configure global application settings and feature flags.</p>
+        </div>
+        <Link href="/admin" className="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
           Back to Dashboard
         </Link>
       </div>
 
       <p className="text-muted">
-        App settings are placeholders. Server-side settings management will be implemented in the Foundation & Security phase.
+        Server-side settings management will be implemented in the Foundation & Security phase.
       </p>
 
-      <section className="glass rounded-2xl p-6 space-y-4">
-        <h2 className="font-display text-lg font-bold">Feature Flags</h2>
-        <label className="flex items-center justify-between cursor-pointer">
+      <section className="glass-raised rounded-2xl p-6 space-y-5">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="font-display text-lg font-bold">Feature Flags</h2>
+        </div>
+        <label className="flex items-center justify-between cursor-pointer group">
           <span className="text-sm">Open Registration</span>
           <input
             type="checkbox"
             defaultChecked
+            className="accent-accent rounded"
             onChange={(e) => handleToggle("registration_open", e.target.checked)}
           />
         </label>
-        <label className="flex items-center justify-between cursor-pointer">
+        <label className="flex items-center justify-between cursor-pointer group">
           <span className="text-sm">Maintenance Mode</span>
           <input
             type="checkbox"
+            className="accent-accent rounded"
             onChange={(e) => handleToggle("maintenance_mode", e.target.checked)}
           />
         </label>
-        <label className="flex items-center justify-between cursor-pointer">
+        <label className="flex items-center justify-between cursor-pointer group">
           <span className="text-sm">Demo Content Banner</span>
           <input
             type="checkbox"
             defaultChecked
+            className="accent-accent rounded"
             onChange={(e) => handleToggle("demo_content_banner", e.target.checked)}
           />
         </label>
       </section>
 
-      <section className="glass rounded-2xl p-6 space-y-4">
-        <h2 className="font-display text-lg font-bold">Defaults</h2>
+      <section className="glass-raised rounded-2xl p-6 space-y-5">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="font-display text-lg font-bold">Defaults</h2>
+        </div>
         <div className="flex items-center justify-between">
           <span className="text-sm">Default Crossfade (seconds)</span>
-          <input type="number" defaultValue="0" min="0" max="30" step="1" onChange={(e) => handleToggle("default_crossfade", Number(e.target.value))} />
+          <input
+            type="number"
+            defaultValue="0"
+            min="0"
+            max="30"
+            step="1"
+            className="w-20 glass rounded-lg px-3 py-1.5 text-sm focus-visible:ring-accent"
+            onChange={(e) => handleToggle("default_crossfade", Number(e.target.value))}
+          />
         </div>
         <div className="flex items-center justify-between">
           <span className="text-sm">Featured Mood</span>
-          <input type="text" defaultValue="dreamy" onChange={(e) => handleToggle("featured_mood", e.target.value)} />
+          <input
+            type="text"
+            defaultValue="dreamy"
+            className="w-32 glass rounded-lg px-3 py-1.5 text-sm focus-visible:ring-accent"
+            onChange={(e) => handleToggle("featured_mood", e.target.value)}
+          />
         </div>
       </section>
     </div>

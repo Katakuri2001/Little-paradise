@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import AdminGuard from "@/components/layout/AdminGuard";
 import { AdminTable } from "@/components/ui/AdminTable";
+import { AdminBadge } from "@/components/ui/AdminBadge";
 import { isAdminUser } from "@/lib/server/admin-helper";
 import { useLibraryStore } from "@/lib/store/libraryStore";
 
@@ -54,10 +55,13 @@ export default function AdminPlaylists() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl font-bold">Playlist Management</h1>
-        <Link href="/admin" className="px-4 py-2 rounded-full bg-white/10 text-muted hover:bg-white/20">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight">Playlist Management</h1>
+          <p className="text-muted mt-1">Curate and manage public playlists.</p>
+        </div>
+        <Link href="/admin" className="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
           Back to Dashboard
         </Link>
       </div>
@@ -69,11 +73,11 @@ export default function AdminPlaylists() {
       )}
 
       {!loading && error && (
-        <div className="glass rounded-2xl p-6 text-center">
-          <p className="text-red-400">{error}</p>
+        <div className="glass-raised rounded-2xl p-8 text-center">
+          <p className="text-rose-400">{error}</p>
           <button
             onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
-            className="mt-4 px-4 py-2 rounded-full bg-white text-black text-sm font-medium hover:scale-105 transition"
+            className="mt-5 px-5 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-transform duration-150 ease-out-custom active:scale-95"
           >
             Retry
           </button>
@@ -83,14 +87,16 @@ export default function AdminPlaylists() {
       {!loading && !error && (
         <>
           <p className="text-muted">
-            Curate playlists. Server-side admin API routes are fully enforced.
+            Server-side admin API routes are fully enforced for all mutations.
           </p>
 
           <AdminTable
             columns={[
               { key: "name", label: "Name" },
-              { key: "trackCount", label: "Tracks" },
-              { key: "isPublic", label: "Public" },
+              { key: "trackCount", label: "Tracks", render: (v) => Number(v || 0).toLocaleString() },
+              { key: "isPublic", label: "Public", render: (v) => (
+                <AdminBadge kind={v ? "active" : "suspended"}>{v ? "Yes" : "No"}</AdminBadge>
+              )},
             ]}
             rows={playlists}
             actions={[
