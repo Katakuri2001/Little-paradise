@@ -196,8 +196,22 @@ export default function AudioEngine() {
     audio.addEventListener("error", onError);
     audio.addEventListener("waiting", onWaiting);
     audio.addEventListener("playing", onPlaying);
+
+    // Smooth time sync for lyrics: requestAnimationFrame loop keeps
+    // currentTime in the store aligned with actual audio position at ~60fps,
+    // so lyrics highlight stays in sync with the music.
+    let rafId: number | null = null;
+    const tick = () => {
+      if (audioRef.current && usePlayerStore.getState().isPlaying) {
+        setCurrentTime(audioRef.current.currentTime);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
     const retry = retryRef.current;
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       retry.reset();
       audio.removeEventListener("timeupdate", onTime);
       audio.removeEventListener("loadedmetadata", onMeta);
