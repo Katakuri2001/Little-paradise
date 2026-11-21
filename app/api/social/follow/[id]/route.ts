@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/server/auth-helper";
+import { getDBWithDemoData } from "@/lib/server/db";
+import { auditLog } from "@/lib/server/audit-log";
 
-export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const u = await getCurrentUser();
   if (!u) {
     return NextResponse.json(
@@ -9,14 +14,45 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       { status: 401 },
     );
   }
-  // Placeholder: server-side follow logic implemented in Foundation & Security phase
-  return NextResponse.json(
-    { error: { code: "NOT_IMPLEMENTED", message: "Follow not yet implemented" } },
-    { status: 501 },
-  );
+
+  const db = await getDBWithDemoData();
+  if (!db) {
+    return NextResponse.json(
+      { error: { code: "UNAVAILABLE", message: "Database unavailable" } },
+      { status: 503 },
+    );
+  }
+
+  const { id: followeeId } = await params;
+  if (followeeId === u.id) {
+    return NextResponse.json(
+      { error: { code: "VALIDATION_ERROR", message: "Cannot follow yourself" } },
+      { status: 400 },
+    );
+  }
+
+  const id = "fo_" + Math.random().toString(36).slice(2, 12);
+  await db
+    .prepare(
+      "INSERT OR IGNORE INTO follows (id, follower_id, followee_id, created_at) VALUES (?, ?, ?, datetime('now'))",
+    )
+    .bind(id, u.id, followeeId)
+    .run();
+
+  await auditLog(db, {
+    userId: u.id,
+    action: "follow_user",
+    targetType: "user",
+    targetId: followeeId,
+  });
+
+  return NextResponse.json({ success: true, followeeId });
 }
 
-export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const u = await getCurrentUser();
   if (!u) {
     return NextResponse.json(
@@ -24,9 +60,27 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
       { status: 401 },
     );
   }
-  // Placeholder: server-side unfollow logic implemented in Foundation & Security phase
-  return NextResponse.json(
-    { error: { code: "NOT_IMPLEMENTED", message: "Unfollow not yet implemented" } },
-    { status: 501 },
-  );
+
+  const db = await getDBWithDemoData();
+  if (!db) {
+    return NextResponse.json(
+      { error: { code: "UNAVAILABLE", message: "Database unavailable" } },
+      { status: 503 },
+    );
+  }
+
+  const { id: followeeId } = await params;
+  await db
+    .prepare("DELETE FROM follows WHERE follower_id = ? AND followee_id = ?")
+    .bind(u.id, followeeId)
+    .run();
+
+  await auditLog(db, {
+    userId: u.id,
+    action: "unfollow_user",
+    targetType: "user",
+    targetId: followeeId,
+  });
+
+  return NextResponse.json({ success: true, followeeId });
 }

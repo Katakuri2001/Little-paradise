@@ -33,9 +33,21 @@ export default function AdminTracks() {
   async function handleAction(action: "edit" | "unpublish" | "delete", id: string) {
     if (!confirm(`Are you sure you want to ${action} this track?`)) return;
     try {
-      if (action === "delete") {
+      if (action === "edit") {
+        const newTitle = prompt("Enter new track title:", tracks.find((t) => t.id === id)?.title ?? "");
+        if (newTitle === null) return;
+        if (!newTitle.trim()) { alert("Title cannot be empty"); return; }
+        const res = await fetch(`/api/admin/tracks/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: newTitle.trim() }),
+        });
+        if (!res.ok) throw new Error("Failed to edit track");
+        setTracks(tracks.map((t) => t.id === id ? { ...t, title: newTitle.trim() } : t));
+      } else if (action === "delete") {
         const res = await fetch(`/api/admin/tracks/${id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Failed to delete track");
+        setTracks(tracks.filter((t) => t.id !== id));
       } else if (action === "unpublish") {
         const res = await fetch(`/api/admin/tracks/${id}`, {
           method: "PATCH",
@@ -43,8 +55,8 @@ export default function AdminTracks() {
           body: JSON.stringify({ status: "unpublished" }),
         });
         if (!res.ok) throw new Error("Failed to unpublish track");
+        setTracks(tracks.map((t) => t.id === id ? { ...t, is_available: false } : t));
       }
-      setTracks(tracks.filter((t) => t.id !== id));
     } catch (e) {
       alert(e instanceof Error ? e.message : "Unknown error");
     }

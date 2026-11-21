@@ -75,7 +75,7 @@ export default function AudioEngine() {
       gain.gain.linearRampToValueAtTime(target, now + durationMs / 1000);
     };
 
-    const src = currentTrack.audioUrl;
+    const src = currentTrack.audioUrl || `/api/tracks/${currentTrack.id}/stream`;
     const needsReload = audio.src !== new URL(src, window.location.origin).href;
 
     if (crossfadeLength > 0 && needsReload) {
