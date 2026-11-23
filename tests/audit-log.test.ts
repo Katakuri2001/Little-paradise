@@ -12,7 +12,7 @@ test("auditLog inserts a row and never throws", async () => {
     },
   };
 
-  // Should not throw even if DB fails
+  // Should return { ok: true } on success
   await expect(
     auditLog(db, {
       userId: "u1",
@@ -21,7 +21,7 @@ test("auditLog inserts a row and never throws", async () => {
       targetId: "u2",
       details: '{"email":"x@y.com"}',
     }),
-  ).resolves.toBeUndefined();
+  ).resolves.toEqual({ ok: true });
 });
 
 test("auditLog handles DB errors gracefully", async () => {
@@ -31,6 +31,7 @@ test("auditLog handles DB errors gracefully", async () => {
     },
   };
 
+  // Should return { ok: false, error } on DB failure
   await expect(
     auditLog(db, {
       userId: "u1",
@@ -39,5 +40,5 @@ test("auditLog handles DB errors gracefully", async () => {
       targetId: "t1",
       details: '{"reason":"copyright"}',
     }),
-  ).resolves.toBeUndefined();
+  ).resolves.toEqual({ ok: false, error: "DB connection failed" });
 });

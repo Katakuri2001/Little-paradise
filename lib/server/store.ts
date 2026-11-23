@@ -12,7 +12,7 @@ import {
 } from "./session-store";
 
 const users = new Map<string, { id: string; email: string; passwordHash: string; username: string; displayName: string; avatarSeed: number; createdAt: string }>();
-const sessions = new Map<string, string>(); // dev fallback only
+const sessions = new Map<string, { userId: string; expiresAt: number }>(); // dev fallback only
 const playlistsByUser = new Map<string, Playlist[]>();
 const favoritesByUser = new Map<string, Set<string>>();
 const historyByUser = new Map<string, { trackId: string; playedAt: string; listenedDuration: number }[]>();
@@ -75,8 +75,8 @@ export async function createSession(userId: string): Promise<string> {
   if (db) {
     return createSessionD1(db, userId);
   }
-  const token = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
-  sessions.set(token, userId);
+  const token = crypto.randomUUID();
+  sessions.set(token, { userId, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 });
   return token;
 }
 export async function getSessionUser(
@@ -88,9 +88,12 @@ export async function getSessionUser(
     return getSessionUserD1(database, token);
   }
   if (!token) return null;
-  const uid = sessions.get(token);
-  if (!uid) return null;
-  return findUserById(uid);
+  const entry = sessions.get(token);
+  if (!entry || entry.expiresAt < Date.now()) {
+    sessions.delete(token);
+    return null;
+  }
+  return findUserById(entry.userId);
 }
 export async function deleteSession(token: string) {
   const db = getDB();
@@ -107,7 +110,7 @@ export async function revokeUserSessions(userId: string) {
     return;
   }
   for (const [token, uid] of sessions.entries()) {
-    if (uid === userId) sessions.delete(token);
+    if (uid.userId === userId) sessions.delete(token);
   }
 }
 export async function cleanupExpiredSessions() {

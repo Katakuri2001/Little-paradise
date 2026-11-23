@@ -35,7 +35,8 @@ export async function GET() {
 
 export async function PATCH(req: Request) {
   const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-  const rl = await checkRateLimit(rateLimitKey("admin:update-settings", ip), 30, 60_000);
+  const KV = (globalThis as any).KV;
+  const rl = await checkRateLimit(rateLimitKey("admin:update-settings", ip), 30, 60_000, KV);
   if (!rl.allowed) {
     return NextResponse.json({ error: { code: "RATE_LIMITED", message: "Too many requests" } }, { status: 429 });
   }

@@ -49,7 +49,7 @@ export default function PlaylistDetail() {
             <button onClick={() => tracks.length && playTrack(tracks[0], tracks)} className="flex items-center gap-2 px-5 py-2 rounded-full bg-white text-black font-medium hover:scale-105 transition">
               <Play size={14} /> Play
             </button>
-            <button onClick={() => { const removed = deletePlaylist(playlist.id); router.push("/playlists"); if (removed) pushToast({ message: "Playlist deleted", undo: () => restorePlaylist(removed) }); }} className="px-4 py-2 rounded-full glass text-sm hover:bg-red-500/20">
+            <button onClick={async () => { const removed = await deletePlaylist(playlist.id); router.push("/playlists"); if (removed) pushToast({ message: "Playlist deleted", undo: () => restorePlaylist(removed) }); }} className="px-4 py-2 rounded-full glass text-sm hover:bg-red-500/20">
               <Trash2 size={14} />
             </button>
           </div>

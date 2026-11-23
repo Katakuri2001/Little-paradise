@@ -12,8 +12,7 @@ export async function createSession(
   db: any,
   userId: string,
 ): Promise<string> {
-  const token =
-    Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+  const token = crypto.randomUUID();
   const now = new Date().toISOString();
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 

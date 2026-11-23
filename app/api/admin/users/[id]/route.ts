@@ -15,7 +15,8 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-  const rl = await checkRateLimit(rateLimitKey("admin:update-user", ip), 30, 60_000);
+  const KV = (globalThis as any).KV;
+  const rl = await checkRateLimit(rateLimitKey("admin:update-user", ip), 30, 60_000, KV);
   if (!rl.allowed) {
     return NextResponse.json({ error: { code: "RATE_LIMITED", message: "Too many requests" } }, { status: 429 });
   }
@@ -65,7 +66,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-  const rl = await checkRateLimit(rateLimitKey("admin:delete-user", ip), 20, 60_000);
+  const KV = (globalThis as any).KV;
+  const rl = await checkRateLimit(rateLimitKey("admin:delete-user", ip), 20, 60_000, KV);
   if (!rl.allowed) {
     return NextResponse.json({ error: { code: "RATE_LIMITED", message: "Too many requests" } }, { status: 429 });
   }

@@ -228,13 +228,15 @@ export default function AudioEngine() {
     if (typeof BroadcastChannel === "undefined") return;
     const bc = new BroadcastChannel("little-paradise-player");
     const handleMessage = (e: MessageEvent) => {
-      if (e.data === "pause" && isPlaying) {
+      // Only act on messages from the local tab; ignore cross-tab pause commands
+      // to prevent any same-origin tab from force-pausing playback.
+      if (e.data === "pause_local" && isPlaying) {
         usePlayerStore.getState().setPlaying(false);
       }
     };
     bc.addEventListener("message", handleMessage);
     if (isPlaying) {
-      bc.postMessage({ type: "pause_others" });
+      bc.postMessage("pause_local");
     }
     return () => {
       bc.removeEventListener("message", handleMessage);

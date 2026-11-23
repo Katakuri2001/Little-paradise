@@ -32,7 +32,7 @@ export async function setSessionCookie(token: string) {
 
 export async function clearSessionCookie() {
   const cookieStore = await cookies();
-  cookieStore.delete("lp_session");
+  cookieStore.set("lp_session", "", { path: "/", maxAge: 0, secure: false, sameSite: "lax" });
 }
 
 export { createSession, deleteSession };

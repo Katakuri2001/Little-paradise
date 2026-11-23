@@ -175,7 +175,18 @@ export type AdminAction =
   | "publish_track"
   | "delete_track"
   | "feature_playlist"
-  | "unfeature_playlist";
+  | "unfeature_playlist"
+  | "update_artist"
+  | "delete_artist"
+  | "update_playlist"
+  | "delete_playlist"
+  | "update_setting"
+  | "view_stats"
+  | "update_track"
+  | "create_track"
+  | "follow_user"
+  | "unfollow_user"
+  | "update_lyrics";
 
 export type AuditLogEntry = {
   id: string;

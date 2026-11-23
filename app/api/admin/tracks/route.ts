@@ -60,7 +60,8 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-  const rl = await checkRateLimit(rateLimitKey("admin:create-track", ip), 20, 60_000);
+  const KV = (globalThis as any).KV;
+  const rl = await checkRateLimit(rateLimitKey("admin:create-track", ip), 20, 60_000, KV);
   if (!rl.allowed) {
     return NextResponse.json({ error: { code: "RATE_LIMITED", message: "Too many requests" } }, { status: 429 });
   }

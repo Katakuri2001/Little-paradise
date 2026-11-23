@@ -9,7 +9,8 @@ import { checkRateLimit, rateLimitKey } from "@/lib/server/rate-limit";
 export async function POST(req: Request) {
   try {
     const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-    const rl = await checkRateLimit(rateLimitKey("login", ip), 10, 60_000);
+    const KV = (globalThis as any).KV;
+    const rl = await checkRateLimit(rateLimitKey("login", ip), 10, 60_000, KV);
     if (!rl.allowed) return jsonError("RATE_LIMITED", "Too many requests", 429);
 
     const body = await req.json();
